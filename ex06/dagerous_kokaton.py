@@ -7,7 +7,7 @@ def center_Y(b_rct):
     b_rct.centery = 0
 
 
-# bombsをglobal変数として利用(のちに爆弾の色などの情報を入れたものとして利用)
+# bombsをglobal変数として利用(のちに爆弾の色などの情報を入れたものとして利用) written by c0a21099
 bombs = []
 
 # スクリーンの設定
