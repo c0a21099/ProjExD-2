@@ -2,6 +2,13 @@ import pygame as pg
 import random
 import sys
 
+# Center_Yを設定し, 球がすべて落ちきったらyを0の位置に設定し直す written by c0a21099
+def center_Y(b_rct):
+    b_rct.centery = 0
+
+
+# bombsをglobal変数として利用(のちに爆弾の色などの情報を入れたものとして利用)
+bombs = []
 
 # スクリーンの設定
 class Screen:
@@ -18,7 +25,6 @@ class Screen:
 
 # 操作キャラの設定
 class Bird:
-
     key_delta = {
         pg.K_UP:    [0, -1],
         pg.K_DOWN:  [0, +1],
@@ -54,15 +60,17 @@ class Bird:
         self.sfc = pg.transform.rotozoom(self.sfc, 0, self.rate)
 
 
-# 爆弾の設定
+# 攻撃の設定 written by c0a21099
 class Bomb:
     def __init__(self, col, r, sp, scr):
         self.sfc = pg.Surface((r*2, r*2))
         self.sfc.set_colorkey((0, 0, 0))
         pg.draw.circle(self.sfc, col, (r, r), r)
         self.rct = self.sfc.get_rect()
+        # centerX = 200(ウィンドウサイズの1/3に設定) written by c0a21099
         self.rct.centerx = random.randint(0, scr.rct.width)
-        self.rct.centery = random.randint(scr.rct.height-500, scr.rct.height)
+        # centerY = 0(ウィンドウの一番上に設定) written by c0a21099
+        center_Y(self.rct)
         self.vx = sp[0]
         self.vy = sp[1]
     
@@ -71,9 +79,6 @@ class Bomb:
     
     def update(self, scr):
         self.rct.move_ip(self.vx, self.vy)
-        yoko, tate = check_bound(self.rct, scr.rct)
-        self.vx *= yoko
-        self.vy *= tate
         self.blit(scr)
 
     def stop(self, scr):
@@ -95,9 +100,10 @@ def check_bound(obj_rct, scr_rct):
 
 
 def main():
+    global bombs
     clock =pg.time.Clock()
     # スクリーンの表示
-    SR = Screen("戦え！こうかとん", (600, 900), "fig/bg.png")
+    SR = Screen("dangerous_kokaton", (600, 900), "fig/bg.png")
     gd_sfc = pg.image.load("fig/gd.png")
     gd_rct = gd_sfc.get_rect()
     gd_rct.center = SR.rct.right/2, SR.rct.bottom-250
@@ -108,13 +114,19 @@ def main():
 
     #爆弾の色設定、進行方向の設定、表示
     colors = ["Red", "Blue", "Green", "Yellow", "Purple"]
-    bombs = []
-    num = 1
+    num = 5
+    
+    # 移動距離の設定 written by c0a21099
+    lx = 0
+    ly = 1
+
     for i in range(num):
-        vx = random.choice([-1, 1])
-        vy = random.choice([-1, 1])
+        # 1ずつ爆弾を画面下部に進める written by c0a21099
+        if i == num:
+            break
+        ly += 1
         color = colors[i % 5]
-        bombs.append(Bomb(color, 10, (vx, vy), SR))
+        bombs.append(Bomb(color, 10, (lx, ly), SR))
         bombs[i].update(SR)
 
     while True:
@@ -146,9 +158,13 @@ def main():
                 clock.tick(0.5)
                 return
 
+        # center_yを呼び直して, center_Yの位置をウィンドウの上(y=0)に設定し直し,
+        # もう一度玉が落ちるようにする. written by c0a21099
+        center_Y(bomb.rct)
+
         pg.display.update()
         clock.tick(1000)
-
+        
 
 if __name__ == "__main__":
     pg.init()
