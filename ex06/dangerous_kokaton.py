@@ -134,7 +134,7 @@ class Bomb:
         self.vy = vy[pos]
 
 
-# 画面端にぶつかったか検知
+#行動可能領域から出たときの判定(一部修正) C0A21035
 def check_bound(obj_rct, scr_rct):
     yoko, tate = +1, +1
     if obj_rct.left < scr_rct.left or scr_rct.right < obj_rct.right:
@@ -273,8 +273,9 @@ def main():
                     #終了時のゲームスコアの表示 c0a21121
                     score(SR, tmr)
 
-                    #リスタートを促す文字を表示する
+                    #リスタートを促す文字を表示する C0A21049
                     text(SR, None, 40, "Press the 'r' key and try again!", 0, (100, 500))
+                    #ゲーム終了する際のテキストを表示する　C0A21035
                     text(SR, None, 40, "Press the 'e' key and finish", 0, (120, 550))
                     pg.display.update()
                     move = False#移動を許可しない c0a21049
