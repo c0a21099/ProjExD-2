@@ -203,7 +203,7 @@ def main():
             if event.type == pg.QUIT:
                 return
 
-        # ゲーム状態の判断 written by c0a21099
+        # ゲーム状態の判断(タイトル) written by c0a21099
         if game_state == TITLE:
             SR.blit()
             GD.blit(SR)
@@ -211,12 +211,13 @@ def main():
             logo.blit(SR)
             start_txt = Text("Press SPACE", "WHITE", SR, (75, 600))
             pg.display.update()
-            
+
             if event.type == pg.KEYUP:  # キーを押したとき
                 # spaceを押したらgame_stateをSTAGEにし, ゲームを開始する
                 if event.key == pg.K_SPACE:
                    game_state = STAGE
-            
+
+        # ゲーム状態の判断(ステージ) written by c0a21099    
         elif game_state == STAGE:
             SR.blit()
             GD.blit(SR)        
